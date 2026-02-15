@@ -1,0 +1,57 @@
+﻿@page "/about"
+@using Logarex.Models
+
+<PageTitle>About</PageTitle>
+
+<div class="page-container">
+
+    <div class="code-panel">
+
+        <h1 class="about-title">О проекте @PlatformSettings.PlatformName</h1>
+
+        <div class="about-section">
+            <h2>Назначение</h2>
+            <p>
+                @PlatformSettings.PlatformName — это веб-приложение для анализа программного кода.
+                Система определяет ключевые слова, операторы, идентификаторы,
+                строковые литералы и общее количество строк.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h2>Как это работает</h2>
+            <p>
+                Пользователь вставляет исходный код в редактор.
+                После анализа система выполняет синтаксический разбор
+                и отображает статистику в правой панели.
+            </p>
+        </div>
+
+        <div class="about-section">
+            <h2>Технологии</h2>
+            <ul class="about-list">
+                <li>Blazor WebAssembly</li>
+                <li>C#</li>
+                <li>Клиентская обработка данных</li>
+                <li>Статический хостинг (GitHub Pages)</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="stats-panel">
+
+        <div class="stats-title">Информация</div>
+
+        <div class="stat-card">
+            <div class="stat-name">Версия</div>
+            <div class="stat-value">@PlatformSettings.Version</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-name">Тип приложения</div>
+            <div class="stat-value">Blazor WASM</div>
+        </div>
+    </div>
+
+</div>

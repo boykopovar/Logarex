@@ -1,5 +1,9 @@
+
+
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    font-size: 16px;
 }
 
 h1:focus {
@@ -112,3 +116,209 @@ code {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+:root {
+    --color-text-primary: #0f1724;
+    --color-brand-text: #1d4ed8;
+    --color-background: #ffffff;
+    --color-border: #e2e8f0;
+    --color-muted: #64748b;
+
+    --color-accent: #2563eb;
+    --color-accent-soft: #eff6ff;
+    --color-accent-hover: #1d4ed8;
+
+    --color-panel: #f8fafc;
+    --color-panel-strong: #eef2ff;
+
+    --color-code-bg: #f8fafc;
+    --color-code-text: #0f1724;
+    --color-code-border: #cbd5e1;
+
+    --color-navlink-text: #1e3a8a;
+    --color-navlink-hover-bg: #dbeafe;
+    --color-navlink-active-bg: #2563eb;
+    --color-navlink-active-text: #ffffff;
+    --color-navlink-disabled-text: #94a3b8;
+}
+
+
+.layout-root {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 28px;
+}
+
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.navlinks {
+    list-style: none;
+    display: flex;
+    gap: 18px;
+    margin: 0;
+    padding: 0;
+}
+
+.navlinks a {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--color-navlink-text);
+    font-weight: 600;
+}
+
+.navlinks a:hover {
+    background: var(--color-navlink-hover-bg);
+}
+
+.navlinks a.active {
+    background: var(--color-navlink-active-bg);
+    color: var(--color-navlink-active-text);
+}
+
+.navlinks .disabled-link {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.navlinks .disabled-link:hover {
+    background: none;
+    color: var(--color-navlink-disabled-text);
+    cursor: default;
+}
+
+.brand a {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 28px;
+    text-decoration: none;
+    color: var(--color-brand-text);
+    letter-spacing: 0.2px;
+}
+
+.page-container {
+    display: flex;
+    gap: 40px;
+    height: calc(100vh - 180px);
+}
+
+.code-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.code-input {
+    flex: 1;
+    width: 100%;
+    resize: none;
+    border: 1px solid var(--color-code-border);
+    border-radius: 14px;
+    padding: 20px;
+    font-family: "Fira Code", monospace;
+    font-size: 15px;
+    line-height: 1.6;
+    background: var(--color-code-bg);
+    color: var(--color-code-text);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: 0.2s ease;
+}
+
+.code-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.code-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+}
+
+.analyze-button {
+    margin-top: 20px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: none;
+    background: var(--color-accent);
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.analyze-button:hover {
+    background: #1d4ed8;
+}
+
+.stats-panel {
+    width: 380px;
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stats-title {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+
+.stat-name {
+    font-size: 14px;
+    color: var(--color-muted);
+}
+
+.stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.about-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.about-section {
+    margin-bottom: 28px;
+}
+
+.about-section h2 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.about-section p {
+    color: var(--color-text-primary);
+    line-height: 1.6;
+}
+
+.about-list {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--color-text-primary);
+}
+

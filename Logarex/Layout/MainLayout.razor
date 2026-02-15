@@ -1,16 +1,27 @@
-﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
-    </div>
+﻿@using Logarex.Models
+@inherits LayoutComponentBase
+@inject NavigationManager Nav
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<div class="layout-root">
+
+    <nav class="topnav">
+        <div class="brand">
+            <a href="@Nav.BaseUri">
+                <span>@PlatformSettings.PlatformName</span>
+            </a>
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
+        <ul class="navlinks">
+            <li>
+                <NavLink href="@($"{Nav.BaseUri}about")">
+                    О проекте
+                </NavLink>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        @Body
     </main>
+
 </div>

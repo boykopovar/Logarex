@@ -1,12 +1,14 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using Logarex.Models
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1"/>
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <PageTitle>@PlatformSettings.PlatformName</PageTitle>
     </Found>
     <NotFound>
-        <PageTitle>Not found</PageTitle>
+        <PageTitle>@PlatformSettings.PlatformName</PageTitle>
         <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+            <p>Страница не найдена</p>
         </LayoutView>
     </NotFound>
 </Router>
