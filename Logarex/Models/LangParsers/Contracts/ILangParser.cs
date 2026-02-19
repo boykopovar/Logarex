@@ -2,5 +2,6 @@
 
 public interface ILangParser
 {
-    
+    string LanguageName { get; }
+    IParsedInfo Parse(string source);
 }
