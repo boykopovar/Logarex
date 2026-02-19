@@ -266,9 +266,17 @@ code {
     padding: 28px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    height: 100%;
+    overflow: hidden;
 }
+
+.stats-table-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    margin-top: 16px;
+}
+
 
 .stat-card {
     background: #f8fafc;
@@ -295,6 +303,43 @@ code {
     font-weight: 700;
     color: var(--color-text-primary);
 }
+
+
+
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.stats-table thead {
+    background: var(--color-panel-strong);
+}
+
+.stats-table th {
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.stats-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.stats-table tbody tr:hover {
+    background: var(--color-accent-soft);
+}
+
+.stats-table td:last-child {
+    text-align: right;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+
 
 .about-title {
     font-size: 28px;

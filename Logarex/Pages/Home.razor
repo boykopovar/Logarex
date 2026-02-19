@@ -1,42 +1,101 @@
 ﻿@page "/"
+@using Logarex.Models.LangParsers.PythonParser
+@using Logarex.Models.LangParsers.Contracts
 
 <PageTitle>Home</PageTitle>
 
 <div class="page-container">
 
     <div class="code-panel">
-        <textarea class="code-input" placeholder="Вставьте программный код для анализа..."></textarea>
-        <button class="analyze-button">Анализировать</button>
+        <textarea class="code-input"
+                  @bind="_code"
+                  placeholder="Вставьте программный код для анализа...">
+        </textarea>
+
+        <button class="analyze-button" @onclick="Analyze">
+            Анализировать
+        </button>
     </div>
 
     <div class="stats-panel">
         <div class="stats-title">Результаты анализа</div>
-
-        <div class="stat-card">
-            <div class="stat-name">Ключевые слова</div>
-            <div class="stat-value">0</div>
+        <div class="stats-table-wrapper">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th>Метрика</th>
+                    <th>Значение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Уникальные операторы (η1)</td>
+                    <td>@_uniqueOperators</td>
+                </tr>
+                <tr>
+                    <td>Уникальные операнды (η2)</td>
+                    <td>@_uniqueOperands</td>
+                </tr>
+                <tr>
+                    <td>Всего операторов (N1)</td>
+                    <td>@_totalOperators</td>
+                </tr>
+                <tr>
+                    <td>Всего операндов (N2)</td>
+                    <td>@_totalOperands</td>
+                </tr>
+                <tr>
+                    <td>Словарь программы</td>
+                    <td>@_vocabulary</td>
+                </tr>
+                <tr>
+                    <td>Длина программы</td>
+                    <td>@_length</td>
+                </tr>
+                <tr>
+                    <td>Объем программы</td>
+                    <td>@_volume</td>
+                </tr>
+                <tr>
+                    <td>Общее количество строк</td>
+                    <td>@_lineCount</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-
-        <div class="stat-card">
-            <div class="stat-name">Операторы</div>
-            <div class="stat-value">0</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-name">Идентификаторы</div>
-            <div class="stat-value">0</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-name">Строковые литералы</div>
-            <div class="stat-value">0</div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-name">Общее количество строк</div>
-            <div class="stat-value">0</div>
-        </div>
-
     </div>
 
 </div>
+
+@code {
+
+private string _code = string.Empty;
+
+private int _uniqueOperators;
+private int _uniqueOperands;
+private int _totalOperators;
+private int _totalOperands;
+private int _vocabulary;
+private int _length;
+private double _volume;
+private int _lineCount;
+
+private void Analyze()
+{
+if (string.IsNullOrWhiteSpace(_code))
+return;
+
+ILangParser parser = new PythonParser();
+IParsedInfo result = parser.Parse(_code);
+
+_uniqueOperators = result.UniqueOperatorsCount;
+_uniqueOperands = result.UniqueOperandsCount;
+_totalOperators = result.TotalOperatorsCount;
+_totalOperands = result.TotalOperandsCount;
+_vocabulary = result.ProgramVocabulary;
+_length = result.ProgramLength;
+_volume = Math.Round(result.ProgramVolume, 2);
+
+_lineCount = _code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+}
+}
