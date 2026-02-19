@@ -4,6 +4,13 @@
 html, body {
     font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     font-size: 16px;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 h1:focus {
@@ -143,11 +150,17 @@ code {
 }
 
 
+
 .layout-root {
+    flex: 1;
     max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 28px;
+    margin: 0 auto;
+    padding: 40px 28px;
+    display: flex;
+    flex-direction: column;
 }
+
+
 
 .topnav {
     display: flex;
@@ -204,15 +217,18 @@ code {
 
 .page-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 40px;
-    height: calc(100vh - 180px);
+    flex: 1;
+    align-items: stretch;
 }
 
 .code-panel {
-    flex: 1;
+    flex: 1 1 600px;
     display: flex;
     flex-direction: column;
 }
+
 
 .code-input {
     flex: 1;
@@ -228,6 +244,7 @@ code {
     color: var(--color-code-text);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     transition: 0.2s ease;
+    min-height: 300px;
 }
 
 .code-input:focus {
@@ -259,7 +276,6 @@ code {
 }
 
 .stats-panel {
-    width: 380px;
     background: white;
     border: 1px solid var(--color-border);
     border-radius: 16px;
@@ -267,8 +283,9 @@ code {
     display: flex;
     flex-direction: column;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-    height: 100%;
     overflow: hidden;
+    flex: 1 1 380px;
+    min-width: 280px;
 }
 
 .stats-table-wrapper {
@@ -366,4 +383,3 @@ code {
     padding-left: 18px;
     color: var(--color-text-primary);
 }
-

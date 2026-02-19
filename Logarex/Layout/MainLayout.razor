@@ -3,14 +3,12 @@
 @inject NavigationManager Nav
 
 <div class="layout-root">
-
     <nav class="topnav">
         <div class="brand">
             <a href="@Nav.BaseUri">
                 <span>@PlatformSettings.PlatformName</span>
             </a>
         </div>
-
         <ul class="navlinks">
             <li>
                 <NavLink href="@($"{Nav.BaseUri}about")">
@@ -19,9 +17,7 @@
             </li>
         </ul>
     </nav>
-
     <main>
         @Body
     </main>
-
 </div>
