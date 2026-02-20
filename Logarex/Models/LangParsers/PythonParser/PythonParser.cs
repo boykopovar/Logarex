@@ -130,30 +130,38 @@ public class PythonParser : ILangParser
         var input = new AntlrInputStream(source);
         var lexer = new Python3Lexer(input);
         var tokens = new CommonTokenStream(lexer);
-        tokens.Fill();
+        var  parser = new Python3Parser(tokens);
+        //tokens.Fill();
+        
+        // foreach (var token in tokens.GetTokens())
+        // {
+        //     if (token.Channel != TokenConstants.DefaultChannel)
+        //         continue;
+        //
+        //     if (IsOperand(token.Type))
+        //     {
+        //         if (!operands.ContainsKey(token.Text))
+        //             operands[token.Text] = 0;
+        //
+        //         operands[token.Text]++;
+        //     }
+        //     else if (IsOperator(token.Type))
+        //     {
+        //         if (!operators.ContainsKey(token.Text))
+        //             operators[token.Text] = 0;
+        //
+        //         operators[token.Text]++;
+        //     }
+        // }
+        
+        //return new PythonParsedInfo(operators, operands);
+        
+        parser.RemoveErrorListeners();
 
-        foreach (var token in tokens.GetTokens())
-        {
-            if (token.Channel != TokenConstants.DefaultChannel)
-                continue;
-
-            if (IsOperand(token.Type))
-            {
-                if (!operands.ContainsKey(token.Text))
-                    operands[token.Text] = 0;
-
-                operands[token.Text]++;
-            }
-            else if (IsOperator(token.Type))
-            {
-                if (!operators.ContainsKey(token.Text))
-                    operators[token.Text] = 0;
-
-                operators[token.Text]++;
-            }
-        }
-
-        return new PythonParsedInfo(operators, operands);
+        var tree = parser.file_input();
+        var visitor = new HalsteadPythonVisitor();
+        visitor.Visit(tree);
+        return visitor.GetResult();
     }
 
 
