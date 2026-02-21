@@ -77,8 +77,27 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
                 CountOperator(token.GetText());
             }
         }
+        if (context.XOR() != null)
+            CountOperator(context.XOR().GetText());
+        if (context.AND_OP() != null)
+            CountOperator(context.AND_OP().GetText());
+        if (context.OR_OP() != null)
+            CountOperator(context.OR_OP().GetText());
+        if (context.POWER()  != null)
+            CountOperator(context.POWER().GetText());
+        if (context.AT()  != null)
+            CountOperator(context.AT().GetText());
         
         return base.VisitExpr(context);
+    }
+
+    public override object VisitArgument(Python3Parser.ArgumentContext context)
+    {
+        if (context.STAR() != null)
+            CountOperator(context.STAR().GetText());
+        if (context.POWER()   != null)
+            CountOperator(context.POWER().GetText());
+        return base.VisitArgument(context);
     }
 
     public override object VisitAtom_expr(Python3Parser.Atom_exprContext context)
@@ -92,6 +111,9 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
                 CountOperator(atom.name().GetText());
             }
         }
+
+        if (context.AWAIT()  != null)
+            CountOperator(context.AWAIT().GetText());
         return base.VisitAtom_expr(context);
     }
 
@@ -121,19 +143,28 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
         {
             CountOperand(context.ELLIPSIS().GetText());
         }
-        else if (context.TRUE() != null)
-        {
-            CountOperand(context.TRUE().GetText());
-        }
-        else if (context.FALSE() != null)
-        {
-            CountOperand(context.FALSE().GetText());
-        }
         else if (context.NONE() != null)
         {
             CountOperand(context.NONE().GetText());
         }
         return base.VisitAtom(context);
+    }
+
+    public override object VisitLiteral_pattern(Python3Parser.Literal_patternContext context)
+    {
+        if (context.signed_number() != null)
+        {
+            CountOperand(context.signed_number().GetText());
+        }
+        else if (context.strings() != null)
+        {
+            CountOperand(context.strings().GetText());
+        }
+        else if (context.NONE()  != null)
+        {
+            CountOperand(context.NONE().GetText());
+        }
+        return base.VisitLiteral_pattern(context);
     }
 
     public override object VisitTerminal(ITerminalNode node)
@@ -146,6 +177,11 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
         {
             string op = node.GetText();
             CountOperator(op);
+        }
+
+        if (tokenType == Python3Parser.TRUE || tokenType == Python3Parser.FALSE)
+        {
+            CountOperand(node.GetText());
         }
         return base.VisitTerminal(node);
     }
@@ -298,5 +334,74 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
     {
         CountOperator(context.PASS().GetText());
         return base.VisitPass_stmt(context);
+    }
+
+    public override object VisitFuncdef(Python3Parser.FuncdefContext context)
+    {
+        CountOperator(context.DEF().GetText());
+        return base.VisitFuncdef(context);
+    }
+
+    public override object VisitClassdef(Python3Parser.ClassdefContext context)
+    {
+        CountOperator(context.CLASS().GetText());
+        if (context.name() != null)
+            CountOperand(context.name().GetText());
+        return base.VisitClassdef(context);
+    }
+
+    public override object VisitLambdef(Python3Parser.LambdefContext context)
+    {
+        CountOperator(context.LAMBDA().GetText());
+        return base.VisitLambdef(context);
+    }
+
+    public override object VisitAsync_stmt(Python3Parser.Async_stmtContext context)
+    {
+        CountOperator(context.ASYNC().GetText());
+        return base.VisitAsync_stmt(context);
+    }
+
+    public override object VisitDel_stmt(Python3Parser.Del_stmtContext context)
+    {
+        CountOperator(context.DEL().GetText());
+        return base.VisitDel_stmt(context);
+    }
+
+    public override object VisitGlobal_stmt(Python3Parser.Global_stmtContext context)
+    {
+        CountOperator(context.GLOBAL().GetText());
+        return base.VisitGlobal_stmt(context);
+    }
+
+    public override object VisitNonlocal_stmt(Python3Parser.Nonlocal_stmtContext context)
+    {
+        CountOperator(context.NONLOCAL().GetText());
+        return base.VisitNonlocal_stmt(context);
+    }
+
+    public override object VisitAssert_stmt(Python3Parser.Assert_stmtContext context)
+    {
+        CountOperator(context.ASSERT().GetText());
+        return base.VisitAssert_stmt(context);
+    }
+
+    public override object VisitMatch_stmt(Python3Parser.Match_stmtContext context)
+    {
+        CountOperator(context.MATCH().GetText());
+        return base.VisitMatch_stmt(context);
+    }
+    
+    public override object VisitCase_block(Python3Parser.Case_blockContext context)
+    {
+        CountOperator(context.CASE().GetText());
+        return base.VisitCase_block(context);
+    }
+    
+    public override object VisitVfpdef(Python3Parser.VfpdefContext context)
+    {
+        if (context.name() != null)
+            CountOperand(context.name().GetText());
+        return base.VisitVfpdef(context);
     }
 }

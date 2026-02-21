@@ -64,12 +64,69 @@
             </table>
         </div>
     </div>
-
+    @if (_operators.Any() || _operand.Any())
+    {
+        <div class="table-row">
+            @if (_operators != null && _operators.Any())
+            {
+                <div class="stats-panel">
+                    <div class="stats-title">Операторы</div>
+                    <div class="stats-table-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Количество</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var kvp in _operators.OrderBy(o => o.Key))
+                            {
+                                <tr>
+                                    <td>@kvp.Key</td>
+                                    <td>@kvp.Value</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            @if (_operand != null && _operand.Any())
+            {
+                <div class="stats-panel">
+                    <div class="stats-title">Операнды</div>
+                    <div class="stats-table-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                            <tr>
+                                <th>Операнд</th>
+                                <th>Количество</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var kvp in _operand.OrderBy(o => o.Key))
+                            {
+                                <tr>
+                                    <td>@kvp.Key</td>
+                                    <td>@kvp.Value</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
 
 @code {
 
 private string _code = string.Empty;
+
+private IReadOnlyDictionary<string, int> _operators = new Dictionary<string, int>();
+private IReadOnlyDictionary<string, int> _operand = new Dictionary<string, int>();
 
 private int _uniqueOperators;
 private int _uniqueOperands;
@@ -87,6 +144,9 @@ return;
 
 ILangParser parser = new PythonParser();
 IParsedInfo result = parser.Parse(_code);
+
+_operators = result.Operators;
+_operand = result.Operands;
 
 _uniqueOperators = result.UniqueOperatorsCount;
 _uniqueOperands = result.UniqueOperandsCount;
