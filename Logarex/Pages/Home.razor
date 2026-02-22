@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Text
 @using Logarex.Models.LangParsers.PythonParser
 @using Logarex.Models.LangParsers.Contracts
 
@@ -64,12 +65,76 @@
             </table>
         </div>
     </div>
-
+    @if (_operators.Any() || _operand.Any())
+    {
+        <div class="table-row">
+            @if (_operators != null && _operators.Any())
+            {
+                <div class="stats-panel">
+                    <div class="stats-title">Операторы</div>
+                    <div class="stats-table-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                            <tr>
+                                <th>Оператор</th>
+                                <th>Количество</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var kvp in _operators.OrderBy(o => o.Key))
+                            {
+                                <tr>
+                                    <td>@kvp.Key</td>
+                                    <td>@kvp.Value</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+            @if (_operand != null && _operand.Any())
+            {
+                <div class="stats-panel">
+                    <div class="stats-title">Операнды</div>
+                    <div class="stats-table-wrapper">
+                        <table class="stats-table">
+                            <thead>
+                            <tr>
+                                <th>Операнд</th>
+                                <th>Количество</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var kvp in _operand.OrderBy(o => o.Key))
+                            {
+                                <tr>
+                                    <td>@kvp.Key</td>
+                                    <td>@kvp.Value</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    @if (_highlightedCode != null)
+    {
+        <div class="highlighted-panel">
+            <div class="stats-title">Подсвеченный код</div>
+            <div class="highlighted-code">@((MarkupString)_highlightedCode)</div>
+        </div>
+    }
 </div>
 
 @code {
 
 private string _code = string.Empty;
+
+private IReadOnlyDictionary<string, int> _operators = new Dictionary<string, int>();
+private IReadOnlyDictionary<string, int> _operand = new Dictionary<string, int>();
 
 private int _uniqueOperators;
 private int _uniqueOperands;
@@ -79,6 +144,7 @@ private int _vocabulary;
 private int _length;
 private double _volume;
 private int _lineCount;
+private string? _highlightedCode = null;
 
 private void Analyze()
 {
@@ -86,16 +152,53 @@ if (string.IsNullOrWhiteSpace(_code))
 return;
 
 ILangParser parser = new PythonParser();
-IParsedInfo result = parser.Parse(_code);
+IParseResult result = parser.Parse(_code);
 
-_uniqueOperators = result.UniqueOperatorsCount;
-_uniqueOperands = result.UniqueOperandsCount;
-_totalOperators = result.TotalOperatorsCount;
-_totalOperands = result.TotalOperandsCount;
-_vocabulary = result.ProgramVocabulary;
-_length = result.ProgramLength;
-_volume = Math.Round(result.ProgramVolume, 2);
+_operators = result.Metrics.Operators;
+_operand = result.Metrics.Operands;
+
+_uniqueOperators = result.Metrics.UniqueOperatorsCount;
+_uniqueOperands = result.Metrics.UniqueOperandsCount;
+_totalOperators = result.Metrics.TotalOperatorsCount;
+_totalOperands = result.Metrics.TotalOperandsCount;
+_vocabulary = result.Metrics.ProgramVocabulary;
+_length = result.Metrics.ProgramLength;
+_volume = Math.Round(result.Metrics.ProgramVolume, 2);
 
 _lineCount = _code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+
+_highlightedCode = BuildHighlightedCode(_code, result.Tokens);
+}
+private string BuildHighlightedCode(string source, List<TokenInfo> tokens)
+{
+    if (tokens == null || !tokens.Any())
+        return System.Web.HttpUtility.HtmlEncode(source);
+
+    var ordered = tokens.OrderBy(t => t.StartIndex).ToList();
+    var sb = new StringBuilder();
+    int lastPos = 0;
+
+    foreach (var token in ordered)
+    {
+        if (token.StartIndex > lastPos)
+        {
+            string text = source.Substring(lastPos, token.StartIndex - lastPos);
+            sb.Append(System.Web.HttpUtility.HtmlEncode(text));
+        }
+
+        string tokenText = System.Web.HttpUtility.HtmlEncode(token.Text);
+        string cssClass = token.IsOperator ? "operator" : "operand";
+        sb.Append($"<span class=\"{cssClass}\">{tokenText}</span>");
+
+        lastPos = token.StartIndex + token.Length;
+    }
+
+    if (lastPos < source.Length)
+    {
+        string text = source.Substring(lastPos);
+        sb.Append(System.Web.HttpUtility.HtmlEncode(text));
+    }
+
+    return sb.ToString();
 }
 }

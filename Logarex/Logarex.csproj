@@ -22,8 +22,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Antlr4 Include="Gramar\Python\Python3Lexer.g4" />
-        <Antlr4 Include="Gramar\Python\Python3Parser.g4" />
+        <Antlr4 Include="Gramar\Python\Python3Lexer.g4">
+            <Listener>true</Listener>
+            <Visitor>true</Visitor>
+        </Antlr4>
+        <Antlr4 Include="Gramar\Python\Python3Parser.g4">
+            <Listener>true</Listener>
+            <Visitor>true</Visitor>
+        </Antlr4>
     </ItemGroup>
     
     <ItemGroup>
