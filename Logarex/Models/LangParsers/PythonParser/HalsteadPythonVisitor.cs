@@ -239,6 +239,11 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
         {
             CountOperand(node);
         }
+
+        if (tokenType == Python3Parser.DOT || tokenType == Python3Parser.COMMA)
+        {
+            CountOperator(node);
+        }
         return base.VisitTerminal(node);
     }
 
