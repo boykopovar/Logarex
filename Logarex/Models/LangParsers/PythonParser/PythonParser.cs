@@ -131,30 +131,6 @@ public class PythonParser : ILangParser
         var lexer = new Python3Lexer(input);
         var tokens = new CommonTokenStream(lexer);
         var  parser = new Python3Parser(tokens);
-        //tokens.Fill();
-        
-        // foreach (var token in tokens.GetTokens())
-        // {
-        //     if (token.Channel != TokenConstants.DefaultChannel)
-        //         continue;
-        //
-        //     if (IsOperand(token.Type))
-        //     {
-        //         if (!operands.ContainsKey(token.Text))
-        //             operands[token.Text] = 0;
-        //
-        //         operands[token.Text]++;
-        //     }
-        //     else if (IsOperator(token.Type))
-        //     {
-        //         if (!operators.ContainsKey(token.Text))
-        //             operators[token.Text] = 0;
-        //
-        //         operators[token.Text]++;
-        //     }
-        // }
-        
-        //return new PythonParsedInfo(operators, operands);
         
         parser.RemoveErrorListeners();
 
@@ -167,6 +143,4 @@ public class PythonParser : ILangParser
             Tokens = visitor.GetTokes()
         };
     }
-
-
 }
