@@ -240,7 +240,7 @@ public class HalsteadPythonVisitor : Python3ParserBaseVisitor<object>
             CountOperand(node);
         }
 
-        if (tokenType == Python3Parser.DOT || tokenType == Python3Parser.COMMA)
+        if (tokenType == Python3Parser.DOT || tokenType == Python3Parser.COMMA || tokenType == Python3Parser.SEMI_COLON)
         {
             CountOperator(node);
         }
