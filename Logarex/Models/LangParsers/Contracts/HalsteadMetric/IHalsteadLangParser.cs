@@ -2,8 +2,8 @@
 
 namespace Logarex.Models.LangParsers.Contracts;
 
-public interface ILangParser
+public interface IHalsteadLangParser
 {
     string LanguageName { get; }
-    IParseResult Parse(string source, string metrics);
+    public HalsteadParseResult HalsteadParse(string source);
 }

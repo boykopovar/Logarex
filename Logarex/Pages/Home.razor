@@ -197,27 +197,25 @@ if (string.IsNullOrEmpty(metric))
 {
     return;   
 }
-
-ILangParser parser = new PythonParser();
-IParseResult result = parser.Parse(_code, metric);
-
 switch (metric)
 {
     case "halstead":
-        _operators = result.Metrics.Operators;
-        _operand = result.Metrics.Operands;
+        IHalsteadLangParser halsteadParser = new PythonParser();
+        HalsteadParseResult halsteadResult = halsteadParser.HalsteadParse(_code);
+        _operators = halsteadResult.Metrics.Operators;
+        _operand = halsteadResult.Metrics.Operands;
 
-        _uniqueOperators = result.Metrics.UniqueOperatorsCount;
-        _uniqueOperands = result.Metrics.UniqueOperandsCount;
-        _totalOperators = result.Metrics.TotalOperatorsCount;
-        _totalOperands = result.Metrics.TotalOperandsCount;
-        _vocabulary = result.Metrics.ProgramVocabulary;
-        _length = result.Metrics.ProgramLength;
-        _volume = Math.Round(result.Metrics.ProgramVolume, 2);
+        _uniqueOperators = halsteadResult.Metrics.UniqueOperatorsCount;
+        _uniqueOperands = halsteadResult.Metrics.UniqueOperandsCount;
+        _totalOperators = halsteadResult.Metrics.TotalOperatorsCount;
+        _totalOperands = halsteadResult.Metrics.TotalOperandsCount;
+        _vocabulary = halsteadResult.Metrics.ProgramVocabulary;
+        _length = halsteadResult.Metrics.ProgramLength;
+        _volume = Math.Round(halsteadResult.Metrics.ProgramVolume, 2);
 
         _lineCount = _code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
 
-        _highlightedCode = BuildHighlightedCode(_code, result.Tokens);
+        _highlightedCode = BuildHighlightedCode(_code, halsteadResult.Tokens);
         break;
     case "jilbs":
         

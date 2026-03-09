@@ -1,6 +1,6 @@
 ﻿namespace Logarex.Models.LangParsers.Contracts;
 
-public interface IParsedInfo
+public interface IHalsteadParsedInfo
 {
     IReadOnlyDictionary<string, int> Operators { get; }
     IReadOnlyDictionary<string, int> Operands { get; }
