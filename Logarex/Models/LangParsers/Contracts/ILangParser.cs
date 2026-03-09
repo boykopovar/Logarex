@@ -5,5 +5,5 @@ namespace Logarex.Models.LangParsers.Contracts;
 public interface ILangParser
 {
     string LanguageName { get; }
-    IParseResult Parse(string source);
+    IParseResult Parse(string source, string metrics);
 }

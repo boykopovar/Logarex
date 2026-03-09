@@ -122,7 +122,7 @@ public class PythonParser : ILangParser
     private bool IsOperand(int type) => OperandTokenTypes.Contains(type);
     private bool IsOperator(int type) => OperatorTokenTypes.Contains(type);
 
-    public IParseResult Parse(string source)
+    public IParseResult Parse(string source, string metrics)
     {
         var operators = new Dictionary<string, int>();
         var operands = new Dictionary<string, int>();
@@ -135,12 +135,21 @@ public class PythonParser : ILangParser
         parser.RemoveErrorListeners();
 
         var tree = parser.file_input();
-        var visitor = new HalsteadPythonVisitor();
-        visitor.Visit(tree);
-        return new IParseResult
-        {
-            Metrics = visitor.GetResult(),
-            Tokens = visitor.GetTokes()
-        };
+        switch (metrics)
+        { 
+            case "halstead":
+                var visitorHal = new HalsteadPythonVisitor();
+                visitorHal.Visit(tree);
+                return new IParseResult
+                {
+                    Metrics = visitorHal.GetResult(),
+                    Tokens = visitorHal.GetTokes()
+                };
+                break;
+            case "jilbs":
+                var visitorJilb = new JilbsPythonVisitor();
+                break;
+        }
+        return null;
     }
 }
