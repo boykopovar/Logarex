@@ -5,10 +5,7 @@ namespace Logarex.Models.LangParsers.PythonParser;
 
 public class HalsteadPythonVisitor : PythonOperatorVisitor
 {
-    private Dictionary<string, int> _operators =  new();
     private Dictionary<string, int> _operands =  new();
-    private List<TokenInfo> _tokens = new();
-
     public new List<TokenInfo> GetTokes() => _tokens;
     public new IHalsteadParsedInfo GetResult()
     {

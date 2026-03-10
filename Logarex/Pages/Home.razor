@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Collections.ObjectModel
 @using System.Text
 @using Logarex.Models.LangParsers.PythonParser
 @using Logarex.Models.LangParsers.Contracts
@@ -88,15 +89,19 @@
                 <tbody>
                 <tr>
                     <td>Абсолютная сложность (CL)</td>
-                    <td>@_uniqueOperators</td>
+                    <td>@_absoluteComplexity</td>
                 </tr>
                 <tr>
                     <td>Относительная сложность (cl)</td>
-                    <td>@_uniqueOperands</td>
+                    <td>@_relativeComplexity</td>
                 </tr>
                 <tr>
                     <td>Максимальная вложенность (CLI)</td>
-                    <td>@_totalOperators</td>
+                    <td>@_maximumNesting</td>
+                </tr>
+                <tr>
+                    <td>Всего операторов</td>
+                    <td>@_totalStatements</td>
                 </tr>
                 </tbody>
             </table>
@@ -173,6 +178,8 @@ private string _code = string.Empty;
 private IReadOnlyDictionary<string, int> _operators = new Dictionary<string, int>();
 private IReadOnlyDictionary<string, int> _operand = new Dictionary<string, int>();
 
+private IReadOnlyDictionary<string, int> _branchingOperators = new Dictionary<string, int>();
+
 private int _uniqueOperators;
 private int _uniqueOperands;
 private int _totalOperators;
@@ -183,9 +190,10 @@ private double _volume;
 private int _lineCount;
 private string? _highlightedCode = null;
 
-private int _absoluteComplexity;
-private int _relativeComplexity;
+private double _absoluteComplexity;
+private double _relativeComplexity;
 private int _maximumNesting;
+private int _totalStatements;
 
 private async Task Analyze()
 {
@@ -218,7 +226,21 @@ switch (metric)
         _highlightedCode = BuildHighlightedCode(_code, halsteadResult.Tokens);
         break;
     case "jilbs":
+        _operand = new Dictionary<string, int>();
+        _operators = new Dictionary<string, int>();
+        _highlightedCode = null;
+        IJilbsLangParser jilbsParser = new PythonParser();
+        JilbsParseResult jilbsResult = jilbsParser.JilbsParse(_code);
+        //_operators = jilbsResult.Metrics.Operators;
+
+        _branchingOperators = jilbsResult.Metrics.BranchingOperators;
         
+        _maximumNesting = jilbsResult.Metrics.MaxNesting;
+        _absoluteComplexity = jilbsResult.Metrics.AbsoluteComplexity;
+        _relativeComplexity = Math.Round(jilbsResult.Metrics.RelativeComplexity, 3);
+        _totalStatements = jilbsResult.Metrics.TotalStatements;
+        
+        //_highlightedCode = BuildHighlightedCode(_code, jilbsResult.Tokens);
         break;
 }
 }

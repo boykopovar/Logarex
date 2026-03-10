@@ -8,8 +8,10 @@ public class PythonJilbsParsedInfo : IJilbsParsedInfo
     public IReadOnlyDictionary<string, int> BranchingOperators { get; }
     public int MaxNesting { get; }
 
-    public PythonJilbsParsedInfo(IReadOnlyDictionary<string, int> operators,
-        IReadOnlyDictionary<string, int> branchingOperators, int maxNesting)
+    public PythonJilbsParsedInfo(
+        IReadOnlyDictionary<string, int> operators,
+        IReadOnlyDictionary<string, int> branchingOperators,
+        int maxNesting)
     {
         Operators = operators;
         BranchingOperators = branchingOperators;

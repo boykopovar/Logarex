@@ -27,6 +27,20 @@ public class PythonParser : IHalsteadLangParser, IJilbsLangParser
     }
     public JilbsParseResult JilbsParse(string source)
     {
-        throw new NotImplementedException();
+        var input = new AntlrInputStream(source);
+        var lexer = new Python3Lexer(input);
+        var tokens = new CommonTokenStream(lexer);
+        var  parser = new Python3Parser(tokens);
+        
+        parser.RemoveErrorListeners();
+        
+        var tree = parser.file_input();
+        var visitorJilbs = new  JilbsPythonVisitor();
+        visitorJilbs.Visit(tree);
+        return new JilbsParseResult
+        {
+            Metrics = visitorJilbs.GetResult(),
+            Tokens = visitorJilbs.GetTokes()
+        };
     }
 }

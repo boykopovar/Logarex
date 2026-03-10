@@ -343,4 +343,17 @@ public class PythonOperatorVisitor : Python3ParserBaseVisitor<object>
         TryOperAddToken(context.CASE());
         return base.VisitCase_block(context);
     }
+
+    public override object VisitComp_for(Python3Parser.Comp_forContext context)
+    {
+        TryOperator(context.FOR());
+        TryOperator(context.IN());
+        return base.VisitComp_for(context);
+    }
+
+    public override object VisitComp_if(Python3Parser.Comp_ifContext context)
+    {
+        TryOperator(context.IF());
+        return base.VisitComp_if(context);
+    }
 }
