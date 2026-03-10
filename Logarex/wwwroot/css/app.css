@@ -258,8 +258,15 @@ code {
     border-color: var(--color-accent);
 }
 
-.analyze-button {
+.button-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
     margin-top: 20px;
+}
+
+.analyze-button {
+    margin-top: 0;
     padding: 14px 20px;
     border-radius: 10px;
     border: none;
@@ -269,10 +276,34 @@ code {
     font-size: 15px;
     cursor: pointer;
     transition: 0.2s ease;
+    white-space: nowrap;
 }
 
 .analyze-button:hover {
     background: #1d4ed8;
+}
+
+.metric-select {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background: white;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: 0.2s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+
+.metric-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .table-row {
@@ -299,6 +330,13 @@ code {
     overflow: hidden;
     flex: 1 1 380px;
     min-width: 280px;
+}
+
+#halstead, #jilbs {
+    display: none;
+}
+#halstead.active, #jilbs.active {
+    display: block;
 }
 
 .stats-table-wrapper {

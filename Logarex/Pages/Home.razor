@@ -1,7 +1,9 @@
 ﻿@page "/"
+@using System.Collections.ObjectModel
 @using System.Text
 @using Logarex.Models.LangParsers.PythonParser
 @using Logarex.Models.LangParsers.Contracts
+@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
@@ -13,12 +15,21 @@
                   placeholder="Вставьте программный код для анализа...">
         </textarea>
 
-        <button class="analyze-button" @onclick="Analyze">
-            Анализировать
-        </button>
+        <div class="button-row">
+            <button class="analyze-button" @onclick="Analyze">
+                Анализировать
+            </button>
+
+            <select id="selectMetrics" class="metric-select" onchange="showStats(this.value)">
+                <option value="">Выберите метрику</option>
+                <option value="halstead">Холстед</option>
+                <option value="jilbs">Джилба</option>
+            </select>
+        </div>
+
     </div>
 
-    <div class="stats-panel">
+    <div id="halstead" class="stats-panel">
         <div class="stats-title">Результаты анализа</div>
         <div class="stats-table-wrapper">
             <table class="stats-table">
@@ -60,6 +71,37 @@
                 <tr>
                     <td>Общее количество строк</td>
                     <td>@_lineCount</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div id="jilbs" class="stats-panel">
+        <div class="stats-title">Результаты анализа</div>
+        <div class="stats-table-wrapper">
+            <table class="stats-table">
+                <thead>
+                <tr>
+                    <th>Метрика</th>
+                    <th>Значение</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Абсолютная сложность (CL)</td>
+                    <td>@_absoluteComplexity</td>
+                </tr>
+                <tr>
+                    <td>Относительная сложность (cl)</td>
+                    <td>@_relativeComplexity</td>
+                </tr>
+                <tr>
+                    <td>Максимальная вложенность (CLI)</td>
+                    <td>@_maximumNesting</td>
+                </tr>
+                <tr>
+                    <td>Всего операторов</td>
+                    <td>@_totalStatements</td>
                 </tr>
                 </tbody>
             </table>
@@ -136,6 +178,8 @@ private string _code = string.Empty;
 private IReadOnlyDictionary<string, int> _operators = new Dictionary<string, int>();
 private IReadOnlyDictionary<string, int> _operand = new Dictionary<string, int>();
 
+private IReadOnlyDictionary<string, int> _branchingOperators = new Dictionary<string, int>();
+
 private int _uniqueOperators;
 private int _uniqueOperands;
 private int _totalOperators;
@@ -146,28 +190,59 @@ private double _volume;
 private int _lineCount;
 private string? _highlightedCode = null;
 
-private void Analyze()
+private double _absoluteComplexity;
+private double _relativeComplexity;
+private int _maximumNesting;
+private int _totalStatements;
+
+private async Task Analyze()
 {
 if (string.IsNullOrWhiteSpace(_code))
 return;
 
-ILangParser parser = new PythonParser();
-IParseResult result = parser.Parse(_code);
+var metric = await JS.InvokeAsync<string>("getSelectedMetric");
+if (string.IsNullOrEmpty(metric))
+{
+    return;   
+}
+switch (metric)
+{
+    case "halstead":
+        IHalsteadLangParser halsteadParser = new PythonParser();
+        HalsteadParseResult halsteadResult = halsteadParser.HalsteadParse(_code);
+        _operators = halsteadResult.Metrics.Operators;
+        _operand = halsteadResult.Metrics.Operands;
 
-_operators = result.Metrics.Operators;
-_operand = result.Metrics.Operands;
+        _uniqueOperators = halsteadResult.Metrics.UniqueOperatorsCount;
+        _uniqueOperands = halsteadResult.Metrics.UniqueOperandsCount;
+        _totalOperators = halsteadResult.Metrics.TotalOperatorsCount;
+        _totalOperands = halsteadResult.Metrics.TotalOperandsCount;
+        _vocabulary = halsteadResult.Metrics.ProgramVocabulary;
+        _length = halsteadResult.Metrics.ProgramLength;
+        _volume = Math.Round(halsteadResult.Metrics.ProgramVolume, 2);
 
-_uniqueOperators = result.Metrics.UniqueOperatorsCount;
-_uniqueOperands = result.Metrics.UniqueOperandsCount;
-_totalOperators = result.Metrics.TotalOperatorsCount;
-_totalOperands = result.Metrics.TotalOperandsCount;
-_vocabulary = result.Metrics.ProgramVocabulary;
-_length = result.Metrics.ProgramLength;
-_volume = Math.Round(result.Metrics.ProgramVolume, 2);
+        _lineCount = _code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
 
-_lineCount = _code.Split('\n', StringSplitOptions.RemoveEmptyEntries).Length;
+        _highlightedCode = BuildHighlightedCode(_code, halsteadResult.Tokens);
+        break;
+    case "jilbs":
+        _operand = new Dictionary<string, int>();
+        _operators = new Dictionary<string, int>();
+        _highlightedCode = null;
+        IJilbsLangParser jilbsParser = new PythonParser();
+        JilbsParseResult jilbsResult = jilbsParser.JilbsParse(_code);
+        //_operators = jilbsResult.Metrics.Operators;
 
-_highlightedCode = BuildHighlightedCode(_code, result.Tokens);
+        _branchingOperators = jilbsResult.Metrics.BranchingOperators;
+        
+        _maximumNesting = jilbsResult.Metrics.MaxNesting;
+        _absoluteComplexity = jilbsResult.Metrics.AbsoluteComplexity;
+        _relativeComplexity = Math.Round(jilbsResult.Metrics.RelativeComplexity, 3);
+        _totalStatements = jilbsResult.Metrics.TotalStatements;
+        
+        //_highlightedCode = BuildHighlightedCode(_code, jilbsResult.Tokens);
+        break;
+}
 }
 private string BuildHighlightedCode(string source, List<TokenInfo> tokens)
 {
@@ -201,4 +276,23 @@ private string BuildHighlightedCode(string source, List<TokenInfo> tokens)
 
     return sb.ToString();
 }
+
 }
+
+<script>
+    let selectedMetric = null;
+    
+    function showStats(value){
+        selectedMetric = value || null;
+        document.querySelectorAll('.stats-panel').forEach(element => {
+            element.classList.remove('active');
+        })
+        if (value){
+            document.getElementById(value).classList.add('active');
+        }
+    }
+    
+    function getSelectedMetric(){
+        return selectedMetric;
+    }
+</script>
